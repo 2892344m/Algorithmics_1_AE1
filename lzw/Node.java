@@ -5,10 +5,12 @@ public class Node {
 	private boolean isWord; // true when node represents a word
 	private Node sibling; // next sibling (when it exists)
 	private Node child; // first child (when it exists)
+	private String code;
 	
 	/** create a new node with letter c */
-	public Node(char c){
+	public Node(char c, String s){
 		letter = c;
+		code = s;
 		isWord = false;
 		sibling = null;
 		child = null;
@@ -18,6 +20,9 @@ public class Node {
 	public char getLetter(){
     	return letter;
     }
+	public String getCode() {
+		return code;
+	}
 	public boolean getIsWord(){
     	return isWord;
     }
@@ -32,6 +37,11 @@ public class Node {
 	public void setLetter(char c){
     	letter = c;
     }
+
+	public void setCode(String s) {
+		code = s;
+	}
+
 	public void setIsWord(boolean b){
     	isWord = b;
     }

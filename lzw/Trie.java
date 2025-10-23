@@ -4,10 +4,15 @@ public class Trie {
 	
 	// create root of the trie
 	private Node root; 
+    private int curCode;
+    private int codeLen;
 	
 	public Trie() {
 		// null character in the root
-		root = new Node(Character.MIN_VALUE); 
+		root = new Node(Character.MIN_VALUE, null); 
+        curCode = 0;
+        codeLen = 8;
+        initialise();
 	}
     
 	// list to store the words in the trie when extract is called
@@ -50,7 +55,20 @@ public class Trie {
 		else return current.getIsWord();
 	}
 		
-	/* now changed so insertion is performed in a lexicographical order (task 3) */
+	/** initialise Trie with all single char strings */
+    private void initialise() {
+
+        Node firstLayer = new Node((char) 0, Integer.toBinaryString(0));
+        root.setChild(firstLayer);
+
+        for (int i = 1; i < 32 * codeLen; i++) {
+			char c = (char) i;
+            Node n = new Node(c, Integer.toBinaryString(i));
+            firstLayer.setSibling(n);
+            firstLayer = n;
+            curCode++;
+		}
+    }
 		
     /** inserting a word w into trie */
     public void insert(String w){
@@ -69,7 +87,9 @@ public class Trie {
                 next = next.getSibling();
             }
             else { // no more siblings: need new node
-                Node x = new Node(w.charAt(i)); // label with ith element of the word
+                Node x = new Node(w.charAt(i), Integer.toBinaryString(curCode)); // label with ith element of the word
+                curCode++;
+                if (Integer.toBinaryString(curCode).length() > codeLen) codeLen++;
                 x.setSibling(current.getChild()); // sibling: first child of current node
                 current.setChild(x); // make first child of current node
                 current = x; // move to the new node
@@ -78,7 +98,6 @@ public class Trie {
             }
         }
         current.setIsWord(true); // current represents word w
-
     }
 
     /** inserting a word w into trie in lexicographic order (task 3) */
@@ -102,7 +121,7 @@ public class Trie {
                     next = next.getSibling();
                 }
                 else { // insert here
-                    Node x = new Node(w.charAt(i)); // label with ith element of the word
+                    Node x = new Node(w.charAt(i), ""); // label with ith element of the word
                     if (previous != null) { // insert between children
                         previous.setSibling(x);
                         x.setSibling(next);
@@ -118,7 +137,7 @@ public class Trie {
                 }
             }
             else { // reach final child so insert
-                Node x = new Node(w.charAt(i)); // label with ith element of the word
+                Node x = new Node(w.charAt(i), ""); // label with ith element of the word
                 if (previous != null) previous.setSibling(x); // insert as last child
                 else current.setChild(x); // insert as first (and only child)
                 i++; // next position in word
@@ -152,5 +171,18 @@ public class Trie {
 		traverse(root.getChild(), s); // start traversal
 		return words;
 	}
+
+    public int getSize() {
+        return traverseBinary(root);
+    }
+
+    private int traverseBinary(Node t) {
+        if (t == null) return 0;
+        int res = 0;
+        if (t.getCode() != null) res += t.getCode().length();
+        res += traverseBinary(t.getChild());
+        res += traverseBinary(t.getSibling());
+        return res;
+    }
 	
 }

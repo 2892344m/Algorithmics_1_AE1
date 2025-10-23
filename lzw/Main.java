@@ -9,57 +9,29 @@ public class Main {
 
 		long start = System.currentTimeMillis();
 		// String inputFileName = args[0];
-		FileReader reader = new FileReader("small.txt");
+		String inputFileName = "small.txt";
+		FileReader reader = new FileReader(inputFileName);
 		Scanner in = new Scanner(reader);
-		
-		Map<String, String> dict = new HashMap<>();
-		int codewordLength = 8;
-		int curCode = 0;
 
-		//Build the initial single char dictionary
-		for (int i = 0; i < 32 * codewordLength; i++) {
-			char c = (char) i;
-			dict.put(Character.toString(c), Integer.toBinaryString(i));
-			curCode++;
-		}
+		long fileSize = new File(inputFileName).length() * 8;
+
+		Trie trie = new Trie();
 
 		StringBuilder sb = new StringBuilder();
 
 		while (in.hasNextLine()) {
-			sb.append(in.nextLine());
-			sb.append("\n");
-		}
-		
-		int i = 0;
-		String t = sb.toString();
-
-		while (i < t.length()-1) {
-			int r = i;
-			String s = t.substring(i, r);
-			while (r < t.length() && dict.containsKey(t.substring(i, r+1))) {
-				s = t.substring(i, r+1);
-				r++;
+			String[] words = in.nextLine().split(" ");
+			for (String w : words) {
+				trie.insert(w);
 			}
-			String code = dict.get(s);
-
-			i += s.length();
-			i = Math.min(i, t.length()-1);
-			char c = t.charAt(i);
-
-			dict.put(s+c, Integer.toBinaryString(curCode));
-			curCode++;
-			if (Integer.toBinaryString(curCode).length() > codewordLength) codewordLength++;
-
+			trie.insert("\n");
 		}
 
-		Trie trie = new Trie();
-		for(String w : dict.keySet()) {
-			trie.insert(w);
-		}
-		// read in the data and do the work here
-        // read a line at a time to enable newlines to be detected and included in the compression
+		int compressedSize = trie.getSize();
 
-		System.out.println(trie.extract());
+		System.out.println("Original file length in bits = " + fileSize);
+		System.out.println("Compressed file length in bits = " + compressedSize);
+		System.out.println("Compression ratio = " + (float) compressedSize/fileSize);
 
 		reader.close();
 
