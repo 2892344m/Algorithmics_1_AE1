@@ -20,9 +20,6 @@ public class Node {
 	public char getLetter(){
     	return letter;
     }
-	public String getCode() {
-		return code;
-	}
 	public boolean getIsWord(){
     	return isWord;
     }
@@ -37,11 +34,6 @@ public class Node {
 	public void setLetter(char c){
     	letter = c;
     }
-
-	public void setCode(String s) {
-		code = s;
-	}
-
 	public void setIsWord(boolean b){
     	isWord = b;
     }
@@ -51,6 +43,12 @@ public class Node {
 	public void setChild(Node n){
     	child = n;
     }
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String s) {
+		code = s;
+	}
     
 }
 

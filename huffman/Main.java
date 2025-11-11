@@ -51,6 +51,7 @@ public class Main {
 		//Read file size and convert from bytes to bits
 		long fileSize = new File(inputFileName).length() * 8;
 
+		//Read each character and increment appropriate map keys
 		while (in.hasNextLine()) {
 			line = in.nextLine();
 			for (char c : line.toCharArray()) {
@@ -80,6 +81,7 @@ public class Main {
 		// read in the data and do the work here
         // read a line at a time to enable newlines to be detected and included in the compression
 
+		System.out.println("Large.txt");
 		System.out.println("Original file length in bits = " + fileSize);
 		System.out.println("Compressed file length in bits = " + compressedSize);
 		System.out.println("Compression ratio = " + (float) compressedSize/fileSize);

@@ -1,6 +1,6 @@
 import java.util.LinkedList;
 
-public class Trie {
+public class TrieTest {
 	
 	// create root of the trie
 	private Node root; 
@@ -9,48 +9,24 @@ public class Trie {
     int bitLength;
     StringBuilder binaryString;
 	
-	public Trie() {
+	public TrieTest() {
 		// null character in the root
 		root = new Node(Character.MIN_VALUE, ""); 
-        bitLength = 8;
+        bitLength = 2;
         compressedSize = 0;
-        curCode = 0;
+        curCode = 3;
         binaryString = new StringBuilder();
-
-        //Initialise the ASCII characters
-        Node cur = new Node((char) 0, prependString(Integer.toBinaryString(curCode).length()) + Integer.toBinaryString(curCode));
-        root.setChild(cur);
-        curCode++;
-        compressedSize += cur.getCode().length();
-
-        for (int i = curCode; i < 127; i++) {
-            Node next = new Node((char) i, Integer.toBinaryString(curCode));
-            cur.setSibling(next);
-            cur = next;
-            curCode++;
-            binaryString.append(Integer.toBinaryString(curCode));
-            compressedSize += cur.getCode().length();
-        }
+        Node child = new Node('A', "00");
+        root.setChild(child);
+        Node sib = new Node('C', "01");
+        child.setSibling(sib);
+        child = sib;
+        sib = new Node('G', "10");
+        child.setSibling(sib);
+        child = sib;
+        sib = new Node('T', "11");
+        child.setSibling(sib);
 	}
-
-    // public Trie() {
-	// 	// null character in the root
-	// 	root = new Node(Character.MIN_VALUE, ""); 
-    //     bitLength = 2;
-    //     compressedSize = 0;
-    //     curCode = 3;
-    //     binaryString = new StringBuilder();
-    //     Node child = new Node('A', "00");
-    //     root.setChild(child);
-    //     Node sib = new Node('C', "01");
-    //     child.setSibling(sib);
-    //     child = sib;
-    //     sib = new Node('G', "10");
-    //     child.setSibling(sib);
-    //     child = sib;
-    //     sib = new Node('T', "11");
-    //     child.setSibling(sib);
-	// }
     
 	// list to store the words in the trie when extract is called
     private LinkedList<String> words = new LinkedList<String>();
@@ -89,14 +65,13 @@ public class Trie {
 		}
 		// return answer
 		if (outcome != Outcomes.PRESENT) return "";
-		else return prependString(current.getCode().length()) + current.getCode();
+		else return current.getCode();
 	}
 		
 	/* now changed so insertion is performed in a lexicographical order (task 3) */
 		
     /** inserting a word w into trie */
-    //Modified version now returns code for insert into the map
-    public String insert(String w){
+    public void insert(String w){
         
         int i = 0; // position in word (start at beginning)
         Node current = root; // current node in trie (start at root)
@@ -117,7 +92,7 @@ public class Trie {
                     compressedSize += curCode;
                     bitLength++;
                 }
-                Node x = new Node(w.charAt(i), Integer.toBinaryString(curCode)); // label with ith element of the word
+                Node x = new Node(w.charAt(i),  prependString(Integer.toBinaryString(curCode).length()) + Integer.toBinaryString(curCode)); // label with ith element of the word
                 x.setSibling(current.getChild()); // sibling: first child of current node
                 current.setChild(x); // make first child of current node
                 current = x; // move to the new node
@@ -126,7 +101,6 @@ public class Trie {
             }
         }
         current.setIsWord(true); // current represents word w
-        return current.getCode();
     }
 
     /** inserting a word w into trie in lexicographic order (task 3) */
@@ -199,6 +173,25 @@ public class Trie {
 		traverse(root.getChild(), s); // start traversal
 		return words;
 	}
+
+    private int traverseSize(Node t) {
+        int size = 0;
+        if (t != null) {
+            size += t.getCode().length();
+            size += traverseSize(t.getChild());
+            size += traverseSize(t.getSibling());
+        }
+        return size;
+    }
+
+    public int extractSize() {
+        return traverseSize(root.getChild());
+    }
+
+    public int getSize() {
+        System.out.println(binaryString.toString().length());
+        return curCode * bitLength;
+    }
 
     private String prependString(int binaryLength) {
         int prependSize = bitLength - binaryLength;
