@@ -17,7 +17,7 @@
             "request": "launch",
             "mainClass": "${file}",
             "args": [
-                "large.txt"
+                "medium.txt"
             ]
         }
     ]

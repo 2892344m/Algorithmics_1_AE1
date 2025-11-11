@@ -1,4 +1,8 @@
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 
 public class Trie {
 	
@@ -8,6 +12,7 @@ public class Trie {
     int curCode;
     int bitLength;
     StringBuilder binaryString;
+    Set<String> codeSet = new HashSet<>();
 	
 	public Trie() {
 		// null character in the root
@@ -16,12 +21,13 @@ public class Trie {
         compressedSize = 0;
         curCode = 0;
         binaryString = new StringBuilder();
+        codeSet = new HashSet<>();
 
         //Initialise the ASCII characters
-        Node cur = new Node((char) 0, prependString(Integer.toBinaryString(curCode).length()) + Integer.toBinaryString(curCode));
+        Node cur = new Node((char) 0, Integer.toBinaryString(curCode));
         root.setChild(cur);
         curCode++;
-        compressedSize += cur.getCode().length();
+        codeSet.add(cur.getCode());
 
         for (int i = curCode; i < 127; i++) {
             Node next = new Node((char) i, Integer.toBinaryString(curCode));
@@ -29,7 +35,7 @@ public class Trie {
             cur = next;
             curCode++;
             binaryString.append(Integer.toBinaryString(curCode));
-            compressedSize += cur.getCode().length();
+            codeSet.add(cur.getCode());
         }
 	}
 
@@ -113,7 +119,7 @@ public class Trie {
             }
             else { // no more siblings: need new node
                 curCode++;
-                if (Integer.toBinaryString(curCode).length() > bitLength) {
+                if (curCode >= Math.pow(2, bitLength)) {
                     compressedSize += curCode;
                     bitLength++;
                 }
@@ -127,6 +133,44 @@ public class Trie {
         }
         current.setIsWord(true); // current represents word w
         return current.getCode();
+    }
+
+    public int codeInsert(String t, int start){ //Recieve the full text and a pointer to the words start
+        Node current = root; // current node in trie (start at root)
+        Node next = current.getChild(); // first child of current node we are testing
+        int i = start;
+        
+        while (i <= t.length()) { // not reached end of word
+            if (next !=null && i < t.length() && next.getLetter() == t.charAt(i)) { // chars match: decend a level
+                current = next; // update node to the child node
+                next = current.getChild(); // update child node
+                i++; // next position in the word
+            }
+            else if (next != null) { // try next sibling
+                next = next.getSibling();
+            }
+            else { // no more siblings: need new node
+                curCode++;
+                if (curCode > Math.pow(2, bitLength)) {
+                    compressedSize += curCode;
+                    bitLength++;
+                }
+                binaryString.append(getCode(current.getCode()));
+                if (i < t.length()) {
+
+                    Node x = new Node(t.charAt(i), Integer.toBinaryString(curCode)); // label with ith element of the word
+                    x.setSibling(current.getChild()); // sibling: first child of current node
+                    current.setChild(x); // make first child of current node
+                    current = x; // move to the new node
+                    next = current.getChild(); // update child node
+                }
+                i++; // next position in word
+                break;
+            }
+        }
+
+        current.setIsWord(true); // current represents word w
+        return i - start - 1;
     }
 
     /** inserting a word w into trie in lexicographic order (task 3) */
@@ -202,14 +246,14 @@ public class Trie {
 
     private String prependString(int binaryLength) {
         int prependSize = bitLength - binaryLength;
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < prependSize; i++) {
-            sb.append("0");
-        }
-        return sb.toString();
+        return "0".repeat(prependSize);
     }
 
     public String getCode(String code) {
         return prependString(code.length()) + code;
+    }
+
+    public int getSize() {
+        return binaryString.toString().length();
     }
 }
