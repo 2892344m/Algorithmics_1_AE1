@@ -1,0 +1,37 @@
+%\documentclass{exam}
+\documentclass[11pt]{article}
+\usepackage{a4wide,amsmath,amssymb,graphicx}
+\usepackage[tagged]{accessibility}
+\setlength{\parindent}{0pt} 
+\setlength{\parskip}{2ex}
+
+\newcommand{\sectionline}{%
+  \nointerlineskip \vspace{\baselineskip}%
+  \hspace{\fill}\rule{\linewidth}{2pt}\hspace{\fill}%
+  \par\nointerlineskip
+}
+
+\pagestyle{myheadings}
+\markright{Algorithmics I -- General information about the quizzes}
+
+\begin{document}
+\
+\thispagestyle{empty}
+%\vskip6pt
+\begin{center}
+{\huge\textbf{Algorithmics I}}
+\\[2ex] {\Large \textbf{General information about the quizzes}}
+\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sectionline
+There will be three assessed quiz questions on moodle in weeks 2--9, giving a total of 24 quiz questions.
+
+\sectionline
+
+For each question a correct answer will score 1 mark, and an incorrect or missing answer will score 0 marks. Each student's best 15 marks for the quizzes (70\% of the questions) will be calculated and converted to a percentage, which will then in turn be converted to a band for this component of the course assessment. Your band for the in-class quizzes will be published at the end of the course on the LTC system. The in-class quizzes collectively amount to 5\% of the overall mark for the course.
+
+\sectionline
+
+Quiz questions will not be made available retrospectively. If you have a medical or other mitigating circumstances for missing a session, then you should let me know by email and provide supporting evidence where appropriate. {\bf Do not submit good cause for missing quiz questions}. Any question that you miss in such circumstances will be treated as void. If $k$ questions are missed due to good cause then your best $17-k$ out of $24-k$ answers will be aggregated, up to a maximum value of $k=7$; if $k>7$, then the entire quiz component of the assessment will be treated as void.
+
+\end{document}

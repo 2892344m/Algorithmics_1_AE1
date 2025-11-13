@@ -1,0 +1,40 @@
+huffman
+
+test1.txt
+Original file length in bits = 120
+Compressed file length in bits = 33
+Compression ratio = 0.2750
+Elapsed time: 46 milliseconds
+
+test2.txt
+Original file length in bits = 128176
+Compressed file length in bits = 77958
+Compression ratio = 0.6082
+Elapsed time: 38 milliseconds
+
+test3.txt
+Original file length in bits = 15344
+Compressed file length in bits = 9268
+Compression ratio = 0.6040
+Elapsed time: 33 milliseconds
+
+-------------------------------------------
+lzw
+
+test1.txt
+Original file length in bits = 120
+Compressed file length in bits = 72
+Compression ratio = 0.6000
+Elapsed time: 33 milliseconds
+
+test2.txt
+Original file length in bits = 128176
+Compressed file length in bits = 60247
+Compression ratio = 0.4700
+Elapsed time: 38 milliseconds
+
+test3.txt
+Original file length in bits = 15344
+Compressed file length in bits = 9435
+Compression ratio = 0.6149
+Elapsed time: 35 milliseconds

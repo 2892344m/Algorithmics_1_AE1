@@ -8,7 +8,8 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 
 		long start = System.currentTimeMillis();
-		String inputFileName = args[0];
+		// String inputFileName = args[0];
+        String inputFileName = "large.txt";
 		FileReader reader = new FileReader(inputFileName);
 		Scanner in = new Scanner(reader);
 
@@ -31,7 +32,7 @@ public class Main {
 
         int i = 0;
 		sb = new StringBuilder();
-        // t = "GACGATACGATACG"; //Test data
+        // t = "GACGATACGATACG";
 
         // This one works
         // while (i < t.length()-1) {
@@ -55,10 +56,8 @@ public class Main {
         //     }
         // }
         // int compressedSize = sb.toString().length();
-
-        while (i < t.length()-1) {
-            i += trie.codeInsert(t, i);
-        }
+        
+        trie.codeInsert(t);
 		int compressedSize = trie.getSize();
 
 		// output the results here
@@ -73,5 +72,4 @@ public class Main {
 		long end = System.currentTimeMillis();
 		System.out.println("Elapsed time: " + (end - start) + " milliseconds");
 	}
-
 }

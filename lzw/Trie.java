@@ -24,18 +24,16 @@ public class Trie {
         codeSet = new HashSet<>();
 
         //Initialise the ASCII characters
-        Node cur = new Node((char) 0, Integer.toBinaryString(curCode));
-        root.setChild(cur);
-        curCode++;
-        codeSet.add(cur.getCode());
+        Node cur = new Node('-', "");
 
-        for (int i = curCode; i < 127; i++) {
+        for (int i = 0; i < 127; i++) {
             Node next = new Node((char) i, Integer.toBinaryString(curCode));
             cur.setSibling(next);
             cur = next;
             curCode++;
             binaryString.append(Integer.toBinaryString(curCode));
             codeSet.add(cur.getCode());
+            if (i == 0) root.setChild(cur);
         }
 	}
 
@@ -120,7 +118,6 @@ public class Trie {
             else { // no more siblings: need new node
                 curCode++;
                 if (curCode >= Math.pow(2, bitLength)) {
-                    compressedSize += curCode;
                     bitLength++;
                 }
                 Node x = new Node(w.charAt(i), Integer.toBinaryString(curCode)); // label with ith element of the word
@@ -135,13 +132,13 @@ public class Trie {
         return current.getCode();
     }
 
-    public int codeInsert(String t, int start){ //Recieve the full text and a pointer to the words start
+    public int codeInsert(String t){ //Recieve the full text and a pointer to the words start
         Node current = root; // current node in trie (start at root)
         Node next = current.getChild(); // first child of current node we are testing
-        int i = start;
+        int i = 0;
         
         while (i <= t.length()) { // not reached end of word
-            if (next !=null && i < t.length() && next.getLetter() == t.charAt(i)) { // chars match: decend a level
+            if (next != null && i < t.length() && next.getLetter() == t.charAt(i)) { // chars match: decend a level
                 current = next; // update node to the child node
                 next = current.getChild(); // update child node
                 i++; // next position in the word
@@ -150,79 +147,27 @@ public class Trie {
                 next = next.getSibling();
             }
             else { // no more siblings: need new node
+                String code = current.getCode();
+
                 curCode++;
                 if (curCode > Math.pow(2, bitLength)) {
-                    compressedSize += curCode;
                     bitLength++;
                 }
+                compressedSize += bitLength;
+
                 binaryString.append(getCode(current.getCode()));
-                if (i < t.length()) {
+                if (i >= t.length()) break;
 
-                    Node x = new Node(t.charAt(i), Integer.toBinaryString(curCode)); // label with ith element of the word
-                    x.setSibling(current.getChild()); // sibling: first child of current node
-                    current.setChild(x); // make first child of current node
-                    current = x; // move to the new node
-                    next = current.getChild(); // update child node
-                }
-                i++; // next position in word
-                break;
+                Node x = new Node(t.charAt(i), code); // label with ith element of the word
+                x.setSibling(current.getChild()); // sibling: first child of current node
+                current.setChild(x); // make first child of current node
+                next = root.getChild();
             }
         }
 
         current.setIsWord(true); // current represents word w
-        return i - start - 1;
+        return 0;
     }
-
-    /** inserting a word w into trie in lexicographic order (task 3) */
-    public void insertLex(String w){
-        
-        int i = 0; // position in word (start at beginning)
-        Node current = root; // current node in trie (start at root)
-        Node next = current.getChild(); // next child of current node we are testing
-        Node previous = null; // previous child we tested
-        
-        while (i < w.length()) { // not reached end of word
-            if (next !=null && next.getLetter() == w.charAt(i)) { // chars match: decend a level
-                i++; // next position in the word
-                current = next; // update node to the child node
-                next = current.getChild(); // update next child node
-                previous = null; // update previous child node
-            }
-            else if (next != null) { // not reached the end
-                if (next.getLetter() < w.charAt(i)) { // move to next child
-                    previous = next;
-                    next = next.getSibling();
-                }
-                else { // insert here
-                    Node x = new Node(w.charAt(i), ""); // label with ith element of the word
-                    if (previous != null) { // insert between children
-                        previous.setSibling(x);
-                        x.setSibling(next);
-                    }
-                    else { // insert as first child
-                        current.setChild(x);
-                        x.setSibling(next);
-                    }
-                    i++; // next position in word
-                    current = x; // move to the new node
-                    next = null; // update next child node
-                    previous = null; // update previous child node
-                }
-            }
-            else { // reach final child so insert
-                Node x = new Node(w.charAt(i), ""); // label with ith element of the word
-                if (previous != null) previous.setSibling(x); // insert as last child
-                else current.setChild(x); // insert as first (and only child)
-                i++; // next position in word
-                current = x; // move to the new node
-                next = null; // update next child node
-                previous = null; // update previous child node
-            }
-        }
-        current.setIsWord(true); // current represents word w
-    }
-
-	// traverse method for extracting words - added below (task 1)
 
 	/* traverse trie from node t adding words to list a assuming path to t yields the string s */
 	private void traverse(Node t, String s){
@@ -254,6 +199,6 @@ public class Trie {
     }
 
     public int getSize() {
-        return binaryString.toString().length();
+        return compressedSize;
     }
 }
